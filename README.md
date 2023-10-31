@@ -22,7 +22,7 @@ Abstract contract generator for interfaces, inspired by spring data jpa and feig
 <dependency>
     <groupId>com.cmeza</groupId>
     <artifactId>spring-ioc-handler</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
