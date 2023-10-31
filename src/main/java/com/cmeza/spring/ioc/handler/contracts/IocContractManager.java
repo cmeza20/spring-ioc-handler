@@ -13,12 +13,14 @@ import com.cmeza.spring.ioc.handler.processors.IocProcessors;
 import com.cmeza.spring.ioc.handler.utils.IocTypes;
 import com.cmeza.spring.ioc.handler.utils.IocUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class IocContractManager {
@@ -78,18 +80,20 @@ public class IocContractManager {
                 .forEach(parameter -> {
                     int index = idx[0]++;
 
-                    if (parameter.isNamePresent()) {
-                        SimpleParameterMetadata parameterMetadata = new SimpleParameterMetadata(parameter, parameter.getParameterizedType());
-
-                        //Parameter Annotation process
-                        consumerManager.getParameterConsumers(ConsumerLocation.ON_START).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
-                        consumerManager.getParameterConsumers(ConsumerLocation.BEFORE_ANNOTATION_PROCESSOR).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
-                        this.executeParameterAnnotatedProcessors(contract.onlyParameterDeclaredAnnotations() ? parameter.getDeclaredAnnotations() : parameter.getAnnotations(), classMetadata, methodMetadata, parameterMetadata, index);
-                        consumerManager.getParameterConsumers(ConsumerLocation.AFTER_ANNOTATION_PROCESSOR).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
-                        consumerManager.getParameterConsumers(ConsumerLocation.ON_END).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
-
-                        methodMetadata.addParameterMetadata(parameterMetadata);
+                    if (!parameter.isNamePresent()) {
+                        log.warn("[{}] Parameter name of method '{}' is not present", parameter.getName(), methodMetadata.getConfigKey());
                     }
+
+                    SimpleParameterMetadata parameterMetadata = new SimpleParameterMetadata(parameter, parameter.getParameterizedType());
+
+                    //Parameter Annotation process
+                    consumerManager.getParameterConsumers(ConsumerLocation.ON_START).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
+                    consumerManager.getParameterConsumers(ConsumerLocation.BEFORE_ANNOTATION_PROCESSOR).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
+                    this.executeParameterAnnotatedProcessors(contract.onlyParameterDeclaredAnnotations() ? parameter.getDeclaredAnnotations() : parameter.getAnnotations(), classMetadata, methodMetadata, parameterMetadata, index);
+                    consumerManager.getParameterConsumers(ConsumerLocation.AFTER_ANNOTATION_PROCESSOR).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
+                    consumerManager.getParameterConsumers(ConsumerLocation.ON_END).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
+
+                    methodMetadata.addParameterMetadata(parameterMetadata);
                 });
 
         //Method Annotation process
