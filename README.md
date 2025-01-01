@@ -13,7 +13,6 @@ Abstract contract generator for interfaces, inspired by spring data jpa and feig
 ## Dependencies ##
 
 * **Java >= 8**
-* **spring-boot-starter-parent < 3.0.0**
 
 ## Maven Integration ##
 
@@ -22,7 +21,7 @@ Abstract contract generator for interfaces, inspired by spring data jpa and feig
 <dependency>
     <groupId>com.cmeza</groupId>
     <artifactId>spring-ioc-handler</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 

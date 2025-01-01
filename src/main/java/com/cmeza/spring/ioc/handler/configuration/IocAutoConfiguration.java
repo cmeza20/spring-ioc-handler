@@ -7,6 +7,7 @@ import com.cmeza.spring.ioc.handler.handlers.IocMethodInterceptor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedClassProcessor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedMethodProcessor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedParameterProcessor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
@@ -19,6 +20,7 @@ import java.util.List;
 @AutoConfiguration
 @AutoConfigureOrder(Ioc.IOC_ORDER)
 @ConditionalOnClass(Ioc.class)
+@RequiredArgsConstructor
 public class IocAutoConfiguration {
 
     @Autowired(required = false)
