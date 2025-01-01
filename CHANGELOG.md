@@ -12,6 +12,11 @@
 ### Added
 - Support for unnamed parameters
 
+## [1.0.2] - 2025-01-01
+### Added
+- Fix factoryBeanObjectType class
+- Add AutoConfiguration.imports registration
 
 [1.0.0]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.0
 [1.0.1]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.1
+[1.0.2]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.2

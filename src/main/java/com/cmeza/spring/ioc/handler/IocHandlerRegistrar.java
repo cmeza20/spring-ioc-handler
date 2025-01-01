@@ -1,6 +1,7 @@
 package com.cmeza.spring.ioc.handler;
 
 import com.cmeza.spring.ioc.handler.annotations.EnableIocHandlers;
+import com.cmeza.spring.ioc.handler.exceptions.IocException;
 import com.cmeza.spring.ioc.handler.factory.IocFactoryBean;
 import com.cmeza.spring.ioc.handler.providers.CustomScanningCandidateComponentProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -96,29 +97,35 @@ public class IocHandlerRegistrar implements ImportBeanDefinitionRegistrar, Resou
     }
 
     private void registerBeanDefinition(BeanDefinitionRegistry registry, AnnotationMetadata annotationMetadata, Class<?> handler) {
-        String className = annotationMetadata.getClassName();
+        try {
+            String className = annotationMetadata.getClassName();
 
-        BeanDefinitionBuilder definition = BeanDefinitionBuilder.genericBeanDefinition(IocFactoryBean.class);
+            BeanDefinitionBuilder definition = BeanDefinitionBuilder.genericBeanDefinition(IocFactoryBean.class);
 
-        definition.addPropertyValue("name", className);
-        definition.addPropertyValue("type", className);
-        definition.addPropertyValue("handler", handler);
-        definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+            definition.addPropertyValue("name", className);
+            definition.addPropertyValue("type", className);
+            definition.addPropertyValue("handler", handler);
+            definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
 
-        AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
-        beanDefinition.setPrimary(true);
-        beanDefinition.setAutowireCandidate(true);
-        beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
-        beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, className);
-        beanDefinition.setLazyInit(true);
+            AbstractBeanDefinition beanDefinition = definition.getBeanDefinition();
+            beanDefinition.setPrimary(true);
+            beanDefinition.setAutowireCandidate(true);
+            beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 
-        String shortName = ClassUtils.getShortName(className);
-        String alias = Introspector.decapitalize(shortName);
+            beanDefinition.setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, Class.forName(className));
+            beanDefinition.setLazyInit(true);
 
-        BeanDefinitionHolder holder = new BeanDefinitionHolder(beanDefinition, className, new String[]{alias});
-        BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+            String shortName = ClassUtils.getShortName(className);
+            String alias = Introspector.decapitalize(shortName);
 
-        log.trace("Bean '{}' registered successfully", annotationMetadata.getClassName());
+            BeanDefinitionHolder holder = new BeanDefinitionHolder(beanDefinition, className, new String[]{alias});
+            BeanDefinitionReaderUtils.registerBeanDefinition(holder, registry);
+
+            log.trace("Bean '{}' registered successfully", annotationMetadata.getClassName());
+        } catch (ClassNotFoundException e) {
+            throw new IocException(e);
+        }
+
     }
 
     @SuppressWarnings("unchecked")
