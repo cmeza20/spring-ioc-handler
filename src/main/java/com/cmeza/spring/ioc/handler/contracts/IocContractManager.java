@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,10 +87,12 @@ public class IocContractManager {
 
                     SimpleParameterMetadata parameterMetadata = new SimpleParameterMetadata(parameter, parameter.getParameterizedType());
 
+
                     //Parameter Annotation process
                     consumerManager.getParameterConsumers(ConsumerLocation.ON_START).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
                     consumerManager.getParameterConsumers(ConsumerLocation.BEFORE_ANNOTATION_PROCESSOR).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
-                    this.executeParameterAnnotatedProcessors(contract.onlyParameterDeclaredAnnotations() ? parameter.getDeclaredAnnotations() : parameter.getAnnotations(), classMetadata, methodMetadata, parameterMetadata, index);
+                    this.executeAnnotatedParameterAnnotatedProcessors(contract.onlyParameterDeclaredAnnotations() ? parameter.getDeclaredAnnotations() : parameter.getAnnotations(), classMetadata, methodMetadata, parameterMetadata, index);
+                    this.executeSimpleParameterAnnotatedProcessors(parameter, classMetadata, methodMetadata, parameterMetadata, index);
                     consumerManager.getParameterConsumers(ConsumerLocation.AFTER_ANNOTATION_PROCESSOR).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
                     consumerManager.getParameterConsumers(ConsumerLocation.ON_END).forEach(consumer -> consumer.accept(classMetadata, methodMetadata, parameterMetadata, index));
 
@@ -126,11 +129,15 @@ public class IocContractManager {
         });
     }
 
-    private void executeParameterAnnotatedProcessors(Annotation[] annotations, SimpleClassMetadata classMetadata, SimpleMethodMetadata methodMetadata, SimpleParameterMetadata parameterMetadata, int index) {
+    private void executeAnnotatedParameterAnnotatedProcessors(Annotation[] annotations, SimpleClassMetadata classMetadata, SimpleMethodMetadata methodMetadata, SimpleParameterMetadata parameterMetadata, int index) {
         Arrays.stream(annotations).forEach(annotation -> processors.getAnnotatedParameterProcessor(annotation.annotationType()).ifPresent(parameterProcessor -> {
             SimpleAnnotationMetadata annotationMetadata = new SimpleAnnotationMetadata(annotation, index);
             parameterMetadata.addProcessorResult(annotation.annotationType(), parameterProcessor.process(annotationMetadata, classMetadata, methodMetadata, parameterMetadata));
             parameterMetadata.addAnnotation(annotationMetadata);
         }));
+    }
+
+    private void executeSimpleParameterAnnotatedProcessors(Parameter parameter, SimpleClassMetadata classMetadata, SimpleMethodMetadata methodMetadata, SimpleParameterMetadata parameterMetadata, int index) {
+        processors.getSimpleParameterProcessors().forEach(parameterProcessor -> parameterProcessor.process(parameter, classMetadata, methodMetadata, parameterMetadata, index));
     }
 }

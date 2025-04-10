@@ -12,11 +12,15 @@ public interface IocProcessors {
 
     IocProcessors setAnnotatedParameterProcessors(List<AnnotatedParameterProcessor<? extends Annotation>> annotatedParameterProcessors);
 
+    IocProcessors setSimpleParameterProcessors(List<SimpleParameterProcessor> simpleParameterProcessors);
+
     <A extends Annotation> IocProcessors addAnnotatedClassProcessor(AnnotatedClassProcessor<A> annotatedClassProcessor);
 
     <A extends Annotation> IocProcessors addAnnotatedMethodProcessor(AnnotatedMethodProcessor<A> annotatedMethodProcessor);
 
     <A extends Annotation> IocProcessors addAnnotatedParameterProcessor(AnnotatedParameterProcessor<A> annotatedParameterProcessor);
+
+    IocProcessors addSimpleParameterProcessor(SimpleParameterProcessor simpleParameterProcessor);
 
     List<AnnotatedClassProcessor<? extends Annotation>> getAnnotatedClassProcessors();
 
@@ -24,11 +28,15 @@ public interface IocProcessors {
 
     List<AnnotatedParameterProcessor<? extends Annotation>> getAnnotatedParameterProcessors();
 
+    List<SimpleParameterProcessor> getSimpleParameterProcessors();
+
     IocProcessors clearAnnotatedClassProcessors();
 
     IocProcessors clearAnnotatedMethodProcessors();
 
     IocProcessors clearAnnotatedParameterProcessors();
+
+    IocProcessors clearSimpleParameterProcessors();
 
     Optional<AnnotatedClassProcessor<? extends Annotation>> getAnnotatedClassProcessor(Class<? extends Annotation> annotationType);
 

@@ -78,7 +78,8 @@ public class IocFactoryBean<T, A> implements FactoryBean<T>, ApplicationContextA
                 .processors(new IocProcessorsManager()
                         .setAnnotatedClassProcessors(context.getClassProcessors())
                         .setAnnotatedMethodProcessors(context.getMethodProcessors())
-                        .setAnnotatedParameterProcessors(context.getParameterProcessors()))
+                        .setAnnotatedParameterProcessors(context.getParameterProcessors())
+                        .setSimpleParameterProcessors(context.getSimpleParameterProcessors()))
                 .methodInterceptors(context.getMethodInterceptors());
     }
 }

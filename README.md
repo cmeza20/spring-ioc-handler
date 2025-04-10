@@ -21,7 +21,7 @@ Abstract contract generator for interfaces, inspired by spring data jpa and feig
 <dependency>
     <groupId>com.cmeza</groupId>
     <artifactId>spring-ioc-handler</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
@@ -256,9 +256,11 @@ public class JdbcContract implements IocContract<JdbcRepository> {
         processors.clearAnnotatedClassProcessors();
         processors.clearAnnotatedMethodProcessors();
         processors.clearAnnotatedParameterProcessors();
+        processors.clearSimpleParameterProcessors();
         processors.setAnnotatedClassProcessors(classProcessors);
         processors.setAnnotatedMethodProcessors(methodProcessors);
         processors.setAnnotatedParameterProcessors(parameterProcessors);
+        processors.setSimpleParameterProcessors(simpleParameterProcessors);
   }
 }
 ```
@@ -338,6 +340,19 @@ public class JdbcParameterProcessor implements AnnotatedParameterProcessor<JdbcP
     //Save extra parameters in metadata
     parameterMetadata.addAttribute("parameterAnnotationName", annotation.value());
     return annotation;
+  }
+}
+```
+
+- **SimpleParameterProcessor**
+  Intercepts all parameters, regardless of whether they include annotations or not.
+```java
+@Component
+public class JdbcSimpleParameterProcessor implements SimpleParameterProcessor {
+
+  @Override
+  public void process(Parameter parameter, ClassMetadata classMetadata, MethodMetadata methodMetadata, ParameterMetadata parameterMetadata, int index) {
+    // Process attributes of the class, method and attribute by position (index)
   }
 }
 ```

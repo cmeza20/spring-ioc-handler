@@ -17,6 +17,11 @@
 - Fix factoryBeanObjectType class
 - Add AutoConfiguration.imports registration
 
+## [1.0.3] - 2025-04-09
+### Added
+- Add SimpleParameterProcessor
+
 [1.0.0]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.0
 [1.0.1]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.1
 [1.0.2]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.2
+[1.0.3]: https://github.com/cmeza20/spring-ioc-handler/tree/1.0.3

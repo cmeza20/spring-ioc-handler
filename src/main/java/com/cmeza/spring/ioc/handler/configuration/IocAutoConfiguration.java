@@ -7,6 +7,7 @@ import com.cmeza.spring.ioc.handler.handlers.IocMethodInterceptor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedClassProcessor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedMethodProcessor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedParameterProcessor;
+import com.cmeza.spring.ioc.handler.processors.SimpleParameterProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -36,6 +37,9 @@ public class IocAutoConfiguration {
     private List<AnnotatedParameterProcessor<?>> parameterProcessors = new ArrayList<>();
 
     @Autowired(required = false)
+    private List<SimpleParameterProcessor> simpleParameterProcessors = new ArrayList<>();
+
+    @Autowired(required = false)
     private List<IocMethodInterceptor<?>> methodInterceptors = new ArrayList<>();
 
     @Bean
@@ -46,6 +50,7 @@ public class IocAutoConfiguration {
         context.setMethodProcessor(this.methodProcessors);
         context.setParameterProcessor(this.parameterProcessors);
         context.setMethodInterceptors(this.methodInterceptors);
+        context.setSimpleParameterProcessor(this.simpleParameterProcessors);
         return context;
     }
 

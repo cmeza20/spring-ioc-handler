@@ -10,6 +10,7 @@ public class IocProcessorsManager implements IocProcessors {
     private Map<Class<? extends Annotation>, AnnotatedClassProcessor<?>> classProcessors = new ConcurrentHashMap<>();
     private Map<Class<? extends Annotation>, AnnotatedMethodProcessor<?>> methodProcessors = new ConcurrentHashMap<>();
     private Map<Class<? extends Annotation>, AnnotatedParameterProcessor<?>> parameterProcessors = new ConcurrentHashMap<>();
+    private List<SimpleParameterProcessor> simpleParameterProcessors = new LinkedList<>();
 
     @Override
     public IocProcessorsManager setAnnotatedClassProcessors(List<AnnotatedClassProcessor<? extends Annotation>> annotatedClassProcessors) {
@@ -36,6 +37,14 @@ public class IocProcessorsManager implements IocProcessors {
     }
 
     @Override
+    public IocProcessors setSimpleParameterProcessors(List<SimpleParameterProcessor> simpleParameterProcessors) {
+        if (Objects.nonNull(simpleParameterProcessors)) {
+            this.simpleParameterProcessors = simpleParameterProcessors;
+        }
+        return this;
+    }
+
+    @Override
     public <A extends Annotation> IocProcessorsManager addAnnotatedClassProcessor(AnnotatedClassProcessor<A> annotatedClassProcessor) {
         classProcessors.put(annotatedClassProcessor.getAnnotationType(), annotatedClassProcessor);
         return this;
@@ -50,6 +59,14 @@ public class IocProcessorsManager implements IocProcessors {
     @Override
     public <A extends Annotation> IocProcessorsManager addAnnotatedParameterProcessor(AnnotatedParameterProcessor<A> annotatedParameterProcessor) {
         parameterProcessors.put(annotatedParameterProcessor.getAnnotationType(), annotatedParameterProcessor);
+        return this;
+    }
+
+    @Override
+    public IocProcessors addSimpleParameterProcessor(SimpleParameterProcessor simpleParameterProcessor) {
+        if (Objects.nonNull(simpleParameterProcessor)) {
+            this.simpleParameterProcessors.add(simpleParameterProcessor);
+        }
         return this;
     }
 
@@ -69,6 +86,11 @@ public class IocProcessorsManager implements IocProcessors {
     }
 
     @Override
+    public List<SimpleParameterProcessor> getSimpleParameterProcessors() {
+        return this.simpleParameterProcessors;
+    }
+
+    @Override
     public IocProcessorsManager clearAnnotatedClassProcessors() {
         classProcessors.clear();
         return this;
@@ -83,6 +105,12 @@ public class IocProcessorsManager implements IocProcessors {
     @Override
     public IocProcessorsManager clearAnnotatedParameterProcessors() {
         parameterProcessors.clear();
+        return this;
+    }
+
+    @Override
+    public IocProcessors clearSimpleParameterProcessors() {
+        simpleParameterProcessors.clear();
         return this;
     }
 
