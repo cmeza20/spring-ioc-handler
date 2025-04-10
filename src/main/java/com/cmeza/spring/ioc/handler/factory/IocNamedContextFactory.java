@@ -5,6 +5,7 @@ import com.cmeza.spring.ioc.handler.handlers.IocMethodInterceptor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedClassProcessor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedMethodProcessor;
 import com.cmeza.spring.ioc.handler.processors.AnnotatedParameterProcessor;
+import com.cmeza.spring.ioc.handler.processors.SimpleParameterProcessor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.DisposableBean;
@@ -30,6 +31,7 @@ public abstract class IocNamedContextFactory implements DisposableBean, Applicat
     private List<AnnotatedMethodProcessor<?>> methodProcessors = new LinkedList<>();
     private List<AnnotatedParameterProcessor<?>> parameterProcessors = new LinkedList<>();
     private List<IocMethodInterceptor<?>> methodInterceptors = new LinkedList<>();
+    private List<SimpleParameterProcessor> simpleParameterProcessors = new LinkedList<>();
     private ApplicationContext parent;
 
     protected IocNamedContextFactory(Class<?> defaultConfigType) {
@@ -96,6 +98,10 @@ public abstract class IocNamedContextFactory implements DisposableBean, Applicat
         this.parameterProcessors = parameterProcessors;
     }
 
+    public void setSimpleParameterProcessor(List<SimpleParameterProcessor> simpleParameterProcessors) {
+        this.simpleParameterProcessors = simpleParameterProcessors;
+    }
+
     public Map<Class<? extends Annotation>, IocContract<?>> getContracts() {
         return contracts;
     }
@@ -117,6 +123,8 @@ public abstract class IocNamedContextFactory implements DisposableBean, Applicat
     public List<AnnotatedParameterProcessor<?>> getParameterProcessors() {
         return parameterProcessors;
     }
+
+    public List<SimpleParameterProcessor> getSimpleParameterProcessors() { return simpleParameterProcessors; }
 
     public List<IocMethodInterceptor<?>> getMethodInterceptors() {
         return methodInterceptors;
